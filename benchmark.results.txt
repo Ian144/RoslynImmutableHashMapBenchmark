@@ -1,0 +1,246 @@
+
+
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in ctor, S.C.I v 1.3.1, size: 100000
+
+               Method |          Mean |      Error |     StdDev | Allocated |
+--------------------- |--------------:|-----------:|-----------:|----------:|
+ SysColImmTryGetValue | 1,140.2764 us |  1.5126 us |  1.1810 us |   0.02 kB |
+    RoslynTryGetValue |   659.3782 us | 25.5500 us | 23.8995 us |   0.01 kB |
+
+               Method |          Mean |      Error |     StdDev | Allocated |
+--------------------- |--------------:|-----------:|-----------:|----------:|
+ SysColImmTryGetValue | 1,196.7907 us | 27.7144 us | 40.6234 us |   0.02 kB |
+    RoslynTryGetValue |   653.9659 us | 15.4547 us | 22.1646 us |   0.01 kB |
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in setup, S.C.I v 1.3.1, size: 10000
+
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 14.8342 ms | 0.0520 ms | 0.0406 ms |   0.12 kB |
+    RoslynTryGetValue | 10.8104 ms | 0.2133 ms | 0.3193 ms |   0.12 kB |        
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in the benchmark function, S.C.I v 1.3.1, size: 10000
+
+               Method |      Mean |     Error |    StdDev |    Gen 0 |    Gen 1 | Allocated |
+--------------------- |----------:|----------:|----------:|---------:|---------:|----------:|
+ SysColImmTryGetValue | 7.4504 ms | 0.1673 ms | 0.2841 ms |        - |        - |   0.36 MB |
+    RoslynTryGetValue | 7.0035 ms | 0.1339 ms | 0.1432 ms | 577.6042 | 569.7917 |   4.08 MB |
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in ctor, with others as static, S.C.I v 1.3.1, size: 10000, random access
+
+               Method |          Mean |      Error |     StdDev | Allocated |
+--------------------- |--------------:|-----------:|-----------:|----------:|
+ SysColImmTryGetValue | 1,495.5168 us | 10.7036 us |  9.4885 us |   0.02 kB |
+    RoslynTryGetValue |   820.4595 us | 15.2845 us | 13.5493 us |   0.01 kB |
+
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in ctor, S.C.I v 1.3.1, size: 10000, random access
+
+               Method |          Mean |      Error |     StdDev | Allocated |
+--------------------- |--------------:|-----------:|-----------:|----------:|
+ SysColImmTryGetValue | 1,465.7533 us |  4.1236 us |  3.4434 us |   0.02 kB |
+    RoslynTryGetValue |   826.9686 us | 16.9765 us | 17.4337 us |   0.01 kB |    
+
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in ctor, size: 10000, random access (S.C.I v 1.5.0)
+
+               Method |          Mean |      Error |     StdDev | Allocated |
+--------------------- |--------------:|-----------:|-----------:|----------:|
+ SysColImmTryGetValue | 1,439.9176 us |  3.5289 us |  3.3009 us |   0.02 kB |
+    RoslynTryGetValue |   836.0175 us | 17.8271 us | 15.8033 us |   0.01 kB |
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in [Setup], size: 10000, random access (S.C.I v 1.5.0)
+
+               Method |          Mean |      Error |     StdDev |        Median | Allocated |
+--------------------- |--------------:|-----------:|-----------:|--------------:|----------:|
+ SysColImmTryGetValue | 1,440.6334 us | 27.4930 us | 31.6609 us | 1,432.3994 us |   0.02 kB |
+    RoslynTryGetValue |   951.1627 us | 26.3165 us | 77.5949 us | 1,013.7768 us |   0.01 kB |
+
+               Method |          Mean |      Error |     StdDev | Allocated |
+--------------------- |--------------:|-----------:|-----------:|----------:|
+ SysColImmTryGetValue | 1,445.7921 us | 28.2331 us | 37.6903 us |   0.02 kB |
+    RoslynTryGetValue |   887.1433 us | 23.5711 us | 25.2208 us |   0.01 kB |
+
+
+
+LegacyJIT-v4.7.3362.0, 32bit, initing the populated collections in [Setup], size: 100000, random access (size x10)
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 31.0161 ms | 0.5865 ms | 0.5486 ms |   0.25 kB |
+    RoslynTryGetValue | 23.7805 ms | 0.4648 ms | 0.8730 ms |   0.24 kB |
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 29.2595 ms | 0.2388 ms | 0.2233 ms |   0.24 kB |
+    RoslynTryGetValue | 24.1706 ms | 0.5385 ms | 0.5530 ms |   0.24 kB |
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 31.1973 ms | 0.0842 ms | 0.0703 ms |   0.48 kB |
+    RoslynTryGetValue | 25.7602 ms | 0.4904 ms | 0.5247 ms |   0.24 kB |
+
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access (64bit)
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 40.1078 ms | 0.4320 ms | 0.4041 ms |   0.48 kB |
+    RoslynTryGetValue | 22.3175 ms | 0.4300 ms | 0.6820 ms |   0.24 kB |
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 39.8569 ms | 0.0997 ms | 0.0932 ms |   0.48 kB |
+    RoslynTryGetValue | 22.8679 ms | 0.4165 ms | 0.6234 ms |   0.24 kB |
+
+               Method |       Mean |     Error |    StdDev | Allocated |
+--------------------- |-----------:|----------:|----------:|----------:|
+ SysColImmTryGetValue | 40.1250 ms | 0.4869 ms | 0.4554 ms |   0.48 kB |
+    RoslynTryGetValue | 22.2343 ms | 0.3954 ms | 0.6606 ms |   0.24 kB |
+
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access, bmdn 0.11.5
+
+|               Method |     Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|--------------------- |---------:|----------:|----------:|------:|------:|------:|----------:|
+| SysColImmTryGetValue | 37.75 ms | 0.7516 ms | 1.1249 ms |     - |     - |     - |         - |
+|    RoslynTryGetValue | 15.47 ms | 0.0170 ms | 0.0159 ms |     - |     - |     - |         - |
+
+    are these numbers more accurate? its a later version of 0.11.5
+
+|               Method |     Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|--------------------- |---------:|----------:|----------:|------:|------:|------:|----------:|
+| SysColImmTryGetValue | 37.51 ms | 0.2396 ms | 0.2001 ms |     - |     - |     - |         - |
+|    RoslynTryGetValue | 15.51 ms | 0.0235 ms | 0.0220 ms |     - |     - |     - |         - |
+
+    second run is very close to the last
+
+|               Method |     Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|--------------------- |---------:|----------:|----------:|------:|------:|------:|----------:|
+| SysColImmTryGetValue | 37.45 ms | 0.3569 ms | 0.3339 ms |     - |     - |     - |         - |
+|    RoslynTryGetValue | 15.55 ms | 0.1272 ms | 0.1189 ms |     - |     - |     - |         - |    
+
+    as is the third run
+
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access, bmdn 0.11.5 (TryGetSet)
+
+|             Method |      Mean |     Error |    StdDev |    Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------- |----------:|----------:|----------:|---------:|------:|------:|----------:|
+| SysColImmTryGetSet | 112.32 ms | 1.2079 ms | 1.0087 ms |        - |     - |     - |         - |
+|    RoslynTryGetSet |  25.65 ms | 0.1140 ms | 0.1066 ms | 500.0000 |     - |     - | 3200028 B |    
+
+    x4.5 faster, 500 gc0 collections vs 0, 1000 benchmark runs, with 100,000 iterations per run
+    the set operation did not change the value, modifying so that it adds 1 
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access, bmdn 0.11.5 (TryGetSet, set updates by adding 1 to the value)
+
+
+|             Method |     Mean |    Error |   StdDev |      Gen 0 |     Gen 1 |    Gen 2 | Allocated |
+|------------------- |---------:|---------:|---------:|-----------:|----------:|---------:|----------:|
+| SysColImmTryGetSet | 390.8 ms | 3.746 ms | 3.128 ms | 17000.0000 | 2000.0000 |        - | 102.03 MB |
+|    RoslynTryGetSet | 195.8 ms | 2.706 ms | 2.531 ms | 18000.0000 | 2000.0000 | 333.3333 | 107.17 MB |    
+
+    S.C.I immutable dictionary allocates when the value is changed?
+    S.C.I memory consumption is only slightly better than roslyn
+    S.C.I speed is x2 slower
+
+|             Method |     Mean |     Error |    StdDev |      Gen 0 |     Gen 1 |    Gen 2 | Allocated |
+|------------------- |---------:|----------:|----------:|-----------:|----------:|---------:|----------:|
+| SysColImmTryGetSet | 387.7 ms | 1.3554 ms | 1.2679 ms | 17000.0000 | 2000.0000 |        - | 102.03 MB |
+|    RoslynTryGetSet | 197.6 ms | 0.9871 ms | 0.8750 ms | 18000.0000 | 2000.0000 | 333.3333 | 107.12 MB |
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access, bmdn 0.11.5  (reverting the +1 in the SetItem operation)
+
+|             Method |      Mean |     Error |    StdDev |    Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------- |----------:|----------:|----------:|---------:|------:|------:|----------:|
+| SysColImmTryGetSet | 110.42 ms | 0.7869 ms | 0.7361 ms |        - |     - |     - |         - |
+|    RoslynTryGetSet |  25.31 ms | 0.0461 ms | 0.0385 ms | 500.0000 |     - |     - | 3200028 B |
+
+    same as the prev run
+
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access, bmdn 0.11.5  (update value with ++ in the SetItem operation)
+
+|             Method |     Mean |    Error |    StdDev |      Gen 0 |     Gen 1 |    Gen 2 | Allocated |
+|------------------- |---------:|---------:|----------:|-----------:|----------:|---------:|----------:|
+| SysColImmTryGetSet | 381.9 ms | 4.955 ms | 4.6348 ms | 17000.0000 | 2000.0000 |        - | 102.03 MB |
+|    RoslynTryGetSet | 197.0 ms | 1.095 ms | 0.9710 ms | 18000.0000 | 2000.0000 | 333.3333 | 107.17 MB |
+
+    close to value+1
+
+|             Method |     Mean |     Error |    StdDev |      Gen 0 |     Gen 1 |    Gen 2 | Allocated |
+|------------------- |---------:|----------:|----------:|-----------:|----------:|---------:|----------:|
+| SysColImmTryGetSet | 395.2 ms | 3.0671 ms | 2.5611 ms | 17000.0000 | 2000.0000 |        - | 102.03 MB |
+|    RoslynTryGetSet | 194.8 ms | 0.5680 ms | 0.5035 ms | 18000.0000 | 2000.0000 | 333.3333 | 107.17 MB |
+
+    
+|             Method |     Mean |     Error |    StdDev |      Gen 0 |     Gen 1 |    Gen 2 | Allocated |
+|------------------- |---------:|----------:|----------:|-----------:|----------:|---------:|----------:|
+| SysColImmTryGetSet | 391.4 ms | 7.9724 ms | 7.4574 ms | 17000.0000 | 2000.0000 |        - | 102.03 MB |
+|    RoslynTryGetSet | 194.2 ms | 0.6809 ms | 0.6036 ms | 18000.0000 | 2000.0000 | 333.3333 | 107.17 MB |
+
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 100000, random access, bmdn 0.11.5, update value with ++ in the SetItem operation, (Server GC)
+
+
+|             Method |      Mean |    Error |   StdDev |    Median |    Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------- |----------:|---------:|---------:|----------:|---------:|------:|------:|----------:|
+| SysColImmTryGetSet | 294.55 ms | 5.837 ms | 6.949 ms | 293.71 ms |        - |     - |     - | 102.03 MB |
+|    RoslynTryGetSet |  90.15 ms | 1.801 ms | 4.384 ms |  92.24 ms | 166.6667 |     - |     - | 107.08 MB |
+
+
+|             Method |      Mean |    Error |   StdDev |    Median |    Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------- |----------:|---------:|---------:|----------:|---------:|------:|------:|----------:|
+| SysColImmTryGetSet | 290.06 ms | 2.176 ms | 1.929 ms | 289.63 ms |        - |     - |     - | 102.03 MB |
+|    RoslynTryGetSet |  91.02 ms | 1.819 ms | 3.716 ms |  92.53 ms | 166.6667 |     - |     - | 107.08 MB |
+
+
+|             Method |      Mean |    Error |   StdDev |    Median | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------- |----------:|---------:|---------:|----------:|------:|------:|------:|----------:|
+| SysColImmTryGetSet | 293.26 ms | 5.696 ms | 7.407 ms | 292.22 ms |     - |     - |     - | 102.03 MB |
+|    RoslynTryGetSet |  89.03 ms | 1.766 ms | 4.622 ms |  92.27 ms |     - |     - |     - | 107.08 MB |
+
+
+|             Method |      Mean |    Error |   StdDev |    Median |    Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------- |----------:|---------:|---------:|----------:|---------:|------:|------:|----------:|
+| SysColImmTryGetSet | 291.99 ms | 4.538 ms | 4.245 ms | 290.40 ms |        - |     - |     - | 102.03 MB |
+|    RoslynTryGetSet |  91.05 ms | 1.803 ms | 4.250 ms |  92.99 ms | 166.6667 |     - |     - | 107.08 MB |
+
+
+RyuJIT-v4.7.3362.0, 64bit, initing the populated collections in [Setup], size: 1000000, random access, bmdn 0.11.5, update value with ++ in the SetItem operation, Server GC, (size x10)
+
+th extra bmarkDN output copied
+
+
+BenchmarkDotNet=v0.11.5, OS=Windows 10.0.17763.475 (1809/October2018Update/Redstone5)
+Intel Core i7-4960HQ CPU 2.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
+  [Host]    : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 32bit LegacyJIT-v4.7.3362.0
+  RyuJitX64 : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3362.0
+
+Job=RyuJitX64  Jit=RyuJit  Platform=X64
+Server=True
+
+|             Method |    Mean |    Error |   StdDev |  Median |     Gen 0 |     Gen 1 | Gen 2 | Allocated |
+|------------------- |--------:|---------:|---------:|--------:|----------:|----------:|------:|----------:|
+| SysColImmTryGetSet | 4.145 s | 0.0429 s | 0.0358 s | 4.134 s | 1000.0000 |         - |     - |    1.2 GB |
+|    RoslynTryGetSet | 1.269 s | 0.0363 s | 0.1071 s | 1.211 s | 2000.0000 | 1000.0000 |     - |   1.22 GB |
+
+
+
+
