@@ -26,16 +26,21 @@ namespace RoslynImmutableHashMapConsoleApp
 
             var map = Volatile.Read(ref location);
             //#### Contract.ThrowIfNull(map);
+
+            // if the key exists return the value
             if (map.TryGetValue(key, out var existingValue))
             {
                 return existingValue;
             }
+
 
             TValue newValue = valueFactory(key, factoryArgument);
 
             do
             {
                 var augmentedMap = map.Add(key, newValue);
+
+                // if location refEq map then do the exchange
                 var replacedMap = Interlocked.CompareExchange(ref location, augmentedMap, map);
                 if (replacedMap == map)
                 {
@@ -44,6 +49,7 @@ namespace RoslynImmutableHashMapConsoleApp
 
                 map = replacedMap;
             }
+            // ReSharper disable once PossibleNullReferenceException
             while (!map.TryGetValue(key, out existingValue));
 
             return existingValue;

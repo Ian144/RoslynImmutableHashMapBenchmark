@@ -1,6 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -9,45 +7,22 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-//using Roslyn.Utilities;
 using Contract = System.Diagnostics.Contracts.Contract;
-// ReSharper disable MemberCanBePrivate.Local
-
+// ReSharper disable UseNullPropagation
+// ReSharper disable MemberCanBePrivate.Global
 namespace RoslynImmutableHashMapConsoleApp
 {
-    /// <summary>
-    /// An immutable unordered hash map implementation.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     [DebuggerTypeProxy(typeof(ImmutableHashMap<,>.DebuggerProxy))]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     internal sealed class ImmutableHashMap<TKey, TValue> : IImmutableDictionary<TKey, TValue>
     {
-        private static readonly ImmutableHashMap<TKey, TValue> s_emptySingleton = new ImmutableHashMap<TKey, TValue>();
-
-        /// <summary>
-        /// The root node of the tree that stores this map.
-        /// </summary>
         private readonly Bucket _root;
 
-        /// <summary>
-        /// The comparer used to sort keys in this map.
-        /// </summary>
         private readonly IEqualityComparer<TKey> _keyComparer;
 
-        /// <summary>
-        /// The comparer used to detect equivalent values in this map.
-        /// </summary>
         private readonly IEqualityComparer<TValue> _valueComparer;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;"/> class.
-        /// </summary>
-        /// <param name="root">The root.</param>
-        /// <param name="comparer">The comparer.</param>
-        /// <param name="valueComparer">The value comparer.</param>
         private ImmutableHashMap(Bucket root, IEqualityComparer<TKey> comparer, IEqualityComparer<TValue> valueComparer)
             : this(comparer, valueComparer)
         {
@@ -58,25 +33,14 @@ namespace RoslynImmutableHashMapConsoleApp
             _root = root;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;"/> class.
-        /// </summary>
-        /// <param name="comparer">The comparer.</param>
-        /// <param name="valueComparer">The value comparer.</param>
         internal ImmutableHashMap(IEqualityComparer<TKey> comparer = null, IEqualityComparer<TValue> valueComparer = null)
         {
             _keyComparer = comparer ?? EqualityComparer<TKey>.Default;
             _valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
         }
 
-        /// <summary>
-        /// Gets an empty map with default equality comparers.
-        /// </summary>
-        public static ImmutableHashMap<TKey, TValue> Empty => s_emptySingleton;
+        public static ImmutableHashMap<TKey, TValue> Empty { get; } = new ImmutableHashMap<TKey, TValue>();
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         public ImmutableHashMap<TKey, TValue> Clear()
         {
             return this.IsEmpty ? this : Empty.WithComparers(_keyComparer, _valueComparer);
@@ -84,14 +48,12 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #region Public methods
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         [Pure]
         public ImmutableHashMap<TKey, TValue> Add(TKey key, TValue value)
         {
             Requires.NotNullAllowStructs(key, "key");
             Contract.Ensures(Contract.Result<ImmutableHashMap<TKey, TValue>>() != null);
+
             var vb = new ValueBucket(key, value, _keyComparer.GetHashCode(key));
             if (_root == null)
             {
@@ -99,13 +61,11 @@ namespace RoslynImmutableHashMapConsoleApp
             }
             else
             {
-                return this.Wrap(_root.Add(0, vb, _keyComparer, _valueComparer, false));
+                var bucket = _root.Add(0, vb, _keyComparer, _valueComparer, false);
+                return this.Wrap(bucket);
             }
         }
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         [Pure]
         public ImmutableHashMap<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
         {
@@ -115,9 +75,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return this.AddRange(pairs, overwriteOnCollision: false, avoidToHashMap: false);
         }
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         [Pure]
         public ImmutableHashMap<TKey, TValue> SetItem(TKey key, TValue value)
         {
@@ -135,11 +92,6 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-        /// <summary>
-        /// Applies a given set of key=value pairs to an immutable dictionary, replacing any conflicting keys in the resulting dictionary.
-        /// </summary>
-        /// <param name="items">The key=value pairs to set on the map.  Any keys that conflict with existing keys will overwrite the previous values.</param>
-        /// <returns>An immutable dictionary.</returns>
         [Pure]
         public ImmutableHashMap<TKey, TValue> SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
@@ -149,9 +101,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return this.AddRange(items, overwriteOnCollision: true, avoidToHashMap: false);
         }
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         [Pure]
         public ImmutableHashMap<TKey, TValue> Remove(TKey key)
         {
@@ -165,9 +114,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return this;
         }
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         [Pure]
         public ImmutableHashMap<TKey, TValue> RemoveRange(IEnumerable<TKey> keys)
         {
@@ -189,15 +135,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return this.Wrap(map);
         }
 
-        /// <summary>
-        /// Returns a hash map that uses the specified key and value comparers and has the same contents as this map.
-        /// </summary>
-        /// <param name="keyComparer">The key comparer.  A value of <c>null</c> results in using the default equality comparer for the type.</param>
-        /// <param name="valueComparer">The value comparer.  A value of <c>null</c> results in using the default equality comparer for the type.</param>
-        /// <returns>The hash map with the new comparers.</returns>
-        /// <remarks>
-        /// In the event that a change in the key equality comparer results in a key collision, an exception is thrown.
-        /// </remarks>
         [Pure]
         public ImmutableHashMap<TKey, TValue> WithComparers(IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
@@ -219,9 +156,6 @@ namespace RoslynImmutableHashMapConsoleApp
                 }
                 else
                 {
-                    // When the key comparer is the same but the value comparer is different, we don't need a whole new tree
-                    // because the structure of the tree does not depend on the value comparer.
-                    // We just need a new root node to store the new value comparer.
                     return new ImmutableHashMap<TKey, TValue>(_root, _keyComparer, valueComparer);
                 }
             }
@@ -233,32 +167,12 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-        /// <summary>
-        /// Returns a hash map that uses the specified key comparer and current value comparer and has the same contents as this map.
-        /// </summary>
-        /// <param name="keyComparer">The key comparer.  A value of <c>null</c> results in using the default equality comparer for the type.</param>
-        /// <returns>The hash map with the new comparers.</returns>
-        /// <remarks>
-        /// In the event that a change in the key equality comparer results in a key collision, an exception is thrown.
-        /// </remarks>
         [Pure]
         public ImmutableHashMap<TKey, TValue> WithComparers(IEqualityComparer<TKey> keyComparer)
         {
             return this.WithComparers(keyComparer, _valueComparer);
         }
 
-        /// <summary>
-        /// Determines whether the ImmutableSortedMap&lt;TKey,TValue&gt;
-        /// contains an element with the specified value.
-        /// </summary>
-        /// <param name="value">
-        /// The value to locate in the ImmutableSortedMap&lt;TKey,TValue&gt;.
-        /// The value can be null for reference types.
-        /// </param>
-        /// <returns>
-        /// true if the ImmutableSortedMap&lt;TKey,TValue&gt; contains
-        /// an element with the specified value; otherwise, false.
-        /// </returns>
         [Pure]
         public bool ContainsValue(TValue value)
         {
@@ -269,28 +183,16 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #region IImmutableDictionary<TKey, TValue> Members
 
-        /// <summary>
-        /// Gets the number of elements in this collection.
-        /// </summary>
         public int Count
         {
             get { return _root != null ? _root.Count : 0; }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is empty.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is empty; otherwise, <c>false</c>.
-        /// </value>
         public bool IsEmpty
         {
             get { return this.Count == 0; }
         }
 
-        /// <summary>
-        /// Gets the keys in the map.
-        /// </summary>
         public IEnumerable<TKey> Keys
         {
             get
@@ -324,9 +226,6 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-        /// <summary>
-        /// Gets the values in the map.
-        /// </summary>
         public IEnumerable<TValue> Values
         {
 #pragma warning disable 618
@@ -334,9 +233,6 @@ namespace RoslynImmutableHashMapConsoleApp
 #pragma warning restore 618
         }
 
-        /// <summary>
-        /// Gets the <typeparamref name="TValue"/> with the specified key.
-        /// </summary>
         public TValue this[TKey key]
         {
             get
@@ -350,13 +246,6 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-        /// <summary>
-        /// Determines whether the specified key contains key.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified key contains key; otherwise, <c>false</c>.
-        /// </returns>
         public bool ContainsKey(TKey key)
         {
             if (_root != null)
@@ -368,13 +257,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return false;
         }
 
-        /// <summary>
-        /// Determines whether this map contains the specified key-value pair.
-        /// </summary>
-        /// <param name="keyValuePair">The key value pair.</param>
-        /// <returns>
-        ///   <c>true</c> if this map contains the key-value pair; otherwise, <c>false</c>.
-        /// </returns>
         public bool Contains(KeyValuePair<TKey, TValue> keyValuePair)
         {
             if (_root != null)
@@ -386,9 +268,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return false;
         }
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (_root != null)
@@ -405,9 +284,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return false;
         }
 
-        /// <summary>
-        /// See the <see cref="IImmutableDictionary&lt;TKey, TValue&gt;"/> interface.
-        /// </summary>
         public bool TryGetKey(TKey equalKey, out TKey actualKey)
         {
             if (_root != null)
@@ -428,12 +304,6 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="IEnumerator{T}"/> that can be used to iterate through the collection.
-        /// </returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return this.GetValueBuckets().Select(vb => new KeyValuePair<TKey, TValue>(vb.Key, vb.Value)).GetEnumerator();
@@ -450,12 +320,6 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #endregion
 
-        /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
-        /// </returns>
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder("ImmutableHashMap[");
@@ -477,12 +341,6 @@ namespace RoslynImmutableHashMapConsoleApp
             return builder.ToString();
         }
 
-        /// <summary>
-        /// Exchanges a key for the actual key instance found in this map.
-        /// </summary>
-        /// <param name="key">The key to search for.</param>
-        /// <param name="existingKey">Receives the equal key found in the map.</param>
-        /// <returns>A value indicating whether an equal and existing key was found in the map.</returns>
         internal bool TryExchangeKey(TKey key, out TKey existingKey)
         {
             var vb = _root?.Get(_keyComparer.GetHashCode(key), key, _keyComparer);
@@ -498,13 +356,6 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-        /// <summary>
-        /// Attempts to discover an <see cref="ImmutableHashMap&lt;TKey, TValue&gt;"/> instance beneath some enumerable sequence
-        /// if one exists.
-        /// </summary>
-        /// <param name="sequence">The sequence that may have come from an immutable map.</param>
-        /// <param name="other">Receives the concrete <see cref="ImmutableHashMap&lt;TKey, TValue&gt;"/> typed value if one can be found.</param>
-        /// <returns><c>true</c> if the cast was successful; <c>false</c> otherwise.</returns>
         private static bool TryCastToImmutableMap(IEnumerable<KeyValuePair<TKey, TValue>> sequence, out ImmutableHashMap<TKey, TValue> other)
         {
             other = sequence as ImmutableHashMap<TKey, TValue>;
@@ -531,23 +382,15 @@ namespace RoslynImmutableHashMapConsoleApp
             return this;
         }
 
-        /// <summary>
-        /// Bulk adds entries to the map.
-        /// </summary>
-        /// <param name="pairs">The entries to add.</param>
-        /// <param name="overwriteOnCollision"><c>true</c> to allow the <paramref name="pairs"/> sequence to include duplicate keys and let the last one win; <c>false</c> to throw on collisions.</param>
-        /// <param name="avoidToHashMap"><c>true</c> when being called from ToHashMap to avoid StackOverflow.</param>
         [Pure]
         private ImmutableHashMap<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs, bool overwriteOnCollision, bool avoidToHashMap)
         {
             Debug.Assert(pairs != null);
             Contract.Ensures(Contract.Result<ImmutableHashMap<TKey, TValue>>() != null);
 
-            // Some optimizations may apply if we're an empty list.
             if (this.IsEmpty && !avoidToHashMap)
             {
-                // If the items being added actually come from an ImmutableHashMap<TKey, TValue>
-                // then there is no value in reconstructing it.
+                // ReSharper disable PossibleMultipleEnumeration
                 if (TryCastToImmutableMap(pairs, out var other))
                 {
                     return other.WithComparers(_keyComparer, _valueComparer);
@@ -561,6 +404,9 @@ namespace RoslynImmutableHashMapConsoleApp
                     ? map.SetItem(pair.Key, pair.Value)
                     : map.Add(pair.Key, pair.Value);
             }
+
+            // ReSharper restore PossibleMultipleEnumeration
+
 
             return map;
         }
@@ -607,15 +453,8 @@ namespace RoslynImmutableHashMapConsoleApp
 
         private abstract class ValueOrListBucket : Bucket
         {
-            /// <summary>
-            /// The hash for this bucket.
-            /// </summary>
             internal readonly int Hash;
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;.ValueOrListBucket"/> class.
-            /// </summary>
-            /// <param name="hash">The hash.</param>
             protected ValueOrListBucket(int hash)
             {
                 this.Hash = hash;
@@ -627,12 +466,6 @@ namespace RoslynImmutableHashMapConsoleApp
             internal readonly TKey Key;
             internal readonly TValue Value;
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;.ValueBucket"/> class.
-            /// </summary>
-            /// <param name="key">The key.</param>
-            /// <param name="value">The value.</param>
-            /// <param name="hashcode">The hashcode.</param>
             internal ValueBucket(TKey key, TValue value, int hashcode)
                 : base(hashcode)
             {
@@ -648,7 +481,6 @@ namespace RoslynImmutableHashMapConsoleApp
                 {
                     if (comparer.Equals(this.Key, bucket.Key))
                     {
-                        // Overwrite of same key.  If the value is the same as well, don't switch out the bucket.
                         if (valueComparer.Equals(this.Value, bucket.Value))
                         {
                             return this;
@@ -667,7 +499,6 @@ namespace RoslynImmutableHashMapConsoleApp
                     }
                     else
                     {
-                        // two of the same hash will never be happy in a hash bucket
                         return new ListBucket(new ValueBucket[] { this, bucket });
                     }
                 }
@@ -699,9 +530,7 @@ namespace RoslynImmutableHashMapConsoleApp
 
             internal override IEnumerable<Bucket> GetAll()
             {
-                //####
                 throw new NotImplementedException();
-                //return SpecializedCollections.SingletonEnumerable(this);
             }
         }
 
@@ -709,10 +538,6 @@ namespace RoslynImmutableHashMapConsoleApp
         {
             private readonly ValueBucket[] _buckets;
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;.ListBucket"/> class.
-            /// </summary>
-            /// <param name="buckets">The buckets.</param>
             internal ListBucket(ValueBucket[] buckets)
                 : base(buckets[0].Hash)
             {
@@ -730,7 +555,6 @@ namespace RoslynImmutableHashMapConsoleApp
                     int pos = this.Find(bucket.Key, comparer);
                     if (pos >= 0)
                     {
-                        // If the value hasn't changed for this key, return the original bucket.
                         if (valueComparer.Equals(bucket.Value, _buckets[pos].Value))
                         {
                             return this;
@@ -823,13 +647,6 @@ namespace RoslynImmutableHashMapConsoleApp
             private readonly Bucket[] _buckets;
             private readonly int _count;
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;.HashBucket"/> class.
-            /// </summary>
-            /// <param name="hashRoll">The hash roll.</param>
-            /// <param name="used">The used.</param>
-            /// <param name="buckets">The buckets.</param>
-            /// <param name="count">The count.</param>
             private HashBucket(int hashRoll, uint used, Bucket[] buckets, int count)
             {
                 Debug.Assert(buckets != null);
@@ -841,19 +658,12 @@ namespace RoslynImmutableHashMapConsoleApp
                 _count = count;
             }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ImmutableHashMap&lt;TKey, TValue&gt;.HashBucket"/> class.
-            /// </summary>
-            /// <param name="suggestedHashRoll">The suggested hash roll.</param>
-            /// <param name="bucket1">The bucket1.</param>
-            /// <param name="bucket2">The bucket2.</param>
             internal HashBucket(int suggestedHashRoll, ValueOrListBucket bucket1, ValueOrListBucket bucket2)
             {
                 Debug.Assert(bucket1 != null);
                 Debug.Assert(bucket2 != null);
                 Debug.Assert(bucket1.Hash != bucket2.Hash);
 
-                // find next hashRoll that causes these two to be slotted in different buckets
                 var h1 = bucket1.Hash;
                 var h2 = bucket2.Hash;
                 int s1;
@@ -884,12 +694,9 @@ namespace RoslynImmutableHashMapConsoleApp
                 int logicalSlot = ComputeLogicalSlot(bucket.Hash);
                 if (IsInUse(logicalSlot))
                 {
-                    // if this slot is in use, then add the new item to the one in this slot
                     int physicalSlot = ComputePhysicalSlot(logicalSlot);
                     var existing = _buckets[physicalSlot];
 
-                    // suggest hash roll that will cause any nested hash bucket to use entirely new bits for picking logical slot
-                    // note: we ignore passed in suggestion, and base new suggestion off current hash roll.
                     var added = existing.Add(_hashRoll + 5, bucket, keyComparer, valueComparer, overwriteExistingValue);
                     if (added != existing)
                     {
@@ -997,7 +804,7 @@ namespace RoslynImmutableHashMapConsoleApp
                     return 0;
                 }
 
-                uint mask = uint.MaxValue >> (32 - logicalSlot); // only count the bits up to the logical slot #
+                uint mask = uint.MaxValue >> (32 - logicalSlot);           
                 return CountBits(_used & mask);
             }
 
@@ -1006,9 +813,9 @@ namespace RoslynImmutableHashMapConsoleApp
             {
                 unchecked
                 {
-#pragma warning disable IDE0054 // Use compound assignment
+#pragma warning disable IDE0054    
                     v = v - ((v >> 1) & 0x55555555u);
-#pragma warning restore IDE0054 // Use compound assignment
+#pragma warning restore IDE0054    
                     v = (v & 0x33333333u) + ((v >> 2) & 0x33333333u);
                     return (int)((v + (v >> 4) & 0xF0F0F0Fu) * 0x1010101u) >> 24;
                 }
@@ -1068,34 +875,18 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #endregion
 
-        /// <summary>
-        /// A simple view of the immutable collection that the debugger can show to the developer.
-        /// </summary>
         private class DebuggerProxy
         {
-            /// <summary>
-            /// The collection to be enumerated.
-            /// </summary>
             private readonly ImmutableHashMap<TKey, TValue> _map;
 
-            /// <summary>
-            /// The simple view of the collection.
-            /// </summary>
             private KeyValuePair<TKey, TValue>[] _contents;
 
-            /// <summary>   
-            /// Initializes a new instance of the <see cref="DebuggerProxy"/> class.
-            /// </summary>
-            /// <param name="map">The collection to display in the debugger</param>
             public DebuggerProxy(ImmutableHashMap<TKey, TValue> map)
             {
                 Requires.NotNull(map, "map");
                 _map = map;
             }
 
-            /// <summary>
-            /// Gets a simple debugger-viewable collection.
-            /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public KeyValuePair<TKey, TValue>[] Contents
             {

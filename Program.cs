@@ -51,24 +51,6 @@ namespace RoslynImmutableHashMapConsoleApp
         //    _roslynMap = ImmutableHashMap<string, int>.Empty.AddRange(_kvps);
         //}
 
-        //[Benchmark]
-        //public void SysColImmTryGetValue()
-        //{
-        //    foreach (var (key, _) in _randItems)
-        //    {
-        //        bool ok = _sciDict.TryGetValue(key, out int vvalue);
-        //    }
-        //}
-
-        //[Benchmark]
-        //public void RoslynTryGetValue()
-        //{
-        //    foreach (var (key, n) in _randItems)
-        //    {
-        //        bool ok = _roslynMap.TryGetValue(key, out int vvalue);
-        //    }
-        //}
-
         [Benchmark]
         public void SysColImmTryGetSet()
         {
@@ -118,7 +100,6 @@ namespace RoslynImmutableHashMapConsoleApp
     {
         private static void Main()
         {
-
             var _ = BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(Job.RyuJitX64.WithGcServer(true)));
         }
     }
