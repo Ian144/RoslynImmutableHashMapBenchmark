@@ -23,9 +23,10 @@ namespace RoslynImmutableHashMapConsoleApp
         private ImmutableDictionary<string, int> _sciDict;
         private ImmutableSortedDictionary<string, int> _sciSortedDict;
         private ImmutableHashMap<string, int> _roslynMap;
+        private Dictionary<string, int> _dict;
         private List<KeyValuePair<string, int>> _kvps;
 
-        private readonly int _addCount = 10000;
+        //private readonly int _addCount = 10000;
 
 
         public Benchmarks()
@@ -41,12 +42,17 @@ namespace RoslynImmutableHashMapConsoleApp
         [GlobalSetup]
         public void GlobalSetup()
         {
-            _items = Enumerable.Range(0, 1000000).Select(n => (n.ToString(), n)).ToArray();
+            _items = Enumerable.Range(0, 1000).Select(n => (n.ToString(), n)).ToArray();
             _randItems = _items.OrderBy(_ => _rnd.Next()).ToArray();
             _kvps = _items.Select(t2 => new KeyValuePair<string, int>(t2.Item1, t2.Item2)).ToList();
             _sciDict = ImmutableDictionary.Create<string, int>().AddRange(_kvps);
             _sciSortedDict = ImmutableSortedDictionary.Create<string, int>().AddRange(_kvps);
             _roslynMap = ImmutableHashMap<string, int>.Empty.AddRange(_kvps);
+            _dict = new Dictionary<string, int>();
+            foreach (var kvp in _kvps)
+            {
+                _dict.Add(kvp.Key, kvp.Value);
+            }
         }
 
         //[GlobalSetup]
@@ -58,7 +64,17 @@ namespace RoslynImmutableHashMapConsoleApp
         //}
 
         [Benchmark]
-        public void SysColImmTryGetSet()
+        public void SortedImmTryGetSet()
+        {
+            foreach (var (key, _) in _randItems)
+            {
+                bool _ = _sciSortedDict.TryGetValue(key, out int vvalue);
+                _sciSortedDict = _sciSortedDict.SetItem(key, ++vvalue);
+            }
+        }
+
+        [Benchmark]
+        public void ImmTryGetSet()
         {
             foreach (var (key, _) in _randItems)
             {
@@ -68,24 +84,25 @@ namespace RoslynImmutableHashMapConsoleApp
         }
 
         [Benchmark]
-        public void SortedTryGetSet()
-        {
-            foreach (var (key, _) in _randItems)
-            {
-                bool _ = _sciSortedDict.TryGetValue(key, out int vvalue);
-                _sciSortedDict = _sciSortedDict.SetItem(key, ++vvalue);
-            }
-        }
-
-
-        [Benchmark]
         public void RoslynTryGetSet()
         {
-            foreach (var (key, n) in _randItems)
+            foreach (var (key, _) in _randItems)
             {
                 bool _ = _roslynMap.TryGetValue(key, out int vvalue);
                 _roslynMap = _roslynMap.SetItem(key, ++vvalue);
             }
+        }
+
+        [Benchmark]
+        public void DictTryGetSetToImmDict()
+        {
+            foreach (var (key, _) in _randItems)
+            {
+                bool _ = _dict.TryGetValue(key, out int vvalue);
+                _dict[key] = ++vvalue;
+            }
+
+            var immx = _dict.ToImmutableDictionary();
         }
 
         //[Benchmark]
@@ -147,17 +164,18 @@ namespace RoslynImmutableHashMapConsoleApp
      * try with updated VS
      *
      */
-
+     
     internal static class Program
     {
         private static void Main()
         {
-            var ihm = ImmutableHashMap<string, int>.Empty;
-            var ihm2 = ihm.Add("one", 1);
-            var ihm3 = ihm2.Add("two", 2);
-            Console.WriteLine(ihm3);
+            //var ihm = ImmutableHashMap<string, int>.Empty;
+            //var ihm2 = ihm.Add("one", 1);
+            //var ihm3 = ihm2.Add("two", 2);
+            //Console.WriteLine(ihm3);
 
-            var _ = BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(Job.RyuJitX64.WithGcServer(true)));
+            //            var _ = BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(Job.RyuJitX64.WithGcServer(true)));
+            var _ = BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(Job.RyuJitX64));
         }
     }
 }
