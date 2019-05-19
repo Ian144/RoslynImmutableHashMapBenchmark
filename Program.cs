@@ -14,15 +14,19 @@ using System.Linq;
 namespace RoslynImmutableHashMapConsoleApp
 {
     [MemoryDiagnoser]
-    //[RyuJitX64Job]
+    [RyuJitX64Job]
     public class Benchmarks
     {
         private readonly Random _rnd;
         private (string, int n)[] _items;
         private (string, int n)[] _randItems;
         private ImmutableDictionary<string, int> _sciDict;
+        private ImmutableSortedDictionary<string, int> _sciSortedDict;
         private ImmutableHashMap<string, int> _roslynMap;
         private List<KeyValuePair<string, int>> _kvps;
+
+        private readonly int _addCount = 10000;
+
 
         public Benchmarks()
         {
@@ -41,9 +45,11 @@ namespace RoslynImmutableHashMapConsoleApp
             _randItems = _items.OrderBy(_ => _rnd.Next()).ToArray();
             _kvps = _items.Select(t2 => new KeyValuePair<string, int>(t2.Item1, t2.Item2)).ToList();
             _sciDict = ImmutableDictionary.Create<string, int>().AddRange(_kvps);
+            _sciSortedDict = ImmutableSortedDictionary.Create<string, int>().AddRange(_kvps);
             _roslynMap = ImmutableHashMap<string, int>.Empty.AddRange(_kvps);
         }
 
+        //[GlobalSetup]
         //[Setup]
         //public void Setup()
         //{
@@ -62,6 +68,17 @@ namespace RoslynImmutableHashMapConsoleApp
         }
 
         [Benchmark]
+        public void SortedTryGetSet()
+        {
+            foreach (var (key, _) in _randItems)
+            {
+                bool _ = _sciSortedDict.TryGetValue(key, out int vvalue);
+                _sciSortedDict = _sciSortedDict.SetItem(key, ++vvalue);
+            }
+        }
+
+
+        [Benchmark]
         public void RoslynTryGetSet()
         {
             foreach (var (key, n) in _randItems)
@@ -71,35 +88,75 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-
         //[Benchmark]
-        //public void SysColImmSetItem()
+        //public void AddNDict()
         //{
-        //    var map = ImmutableDictionary<string, int>.Empty;
-
-        //    foreach (var (key, n) in _items)
+        //    var map = new Dictionary<int,int>();
+        //    for (int ctr = 0; ctr < _addCount; ++ctr)
         //    {
-        //        map = map.SetItem(key, n);
+        //        map.Add(ctr, ctr);
         //    }
         //}
 
         //[Benchmark]
-        //public void RoslynSetItem()
+        //public void AddNSortedDict()
         //{
-        //    var map = ImmutableHashMap<string, int>.Empty;
-
-        //    foreach (var (key, n) in _items)
+        //    var map = new SortedDictionary<int, int>();
+        //    for (int ctr = 0; ctr < _addCount; ++ctr)
         //    {
-        //        map = map.SetItem(key, n);
+        //        map.Add(ctr, ctr);
+        //    }
+        //}
+
+        //[Benchmark]
+        //public void AddNImmutableDict()
+        //{
+        //    var map = ImmutableDictionary.Create<int, int>();
+        //    for (int ctr = 0; ctr < _addCount; ++ctr)
+        //    {
+        //        map = map.Add(ctr, ctr);
+        //    }
+        //}
+
+        //[Benchmark]
+        //public void AddNImmutableSortedDict()
+        //{
+        //    var map = ImmutableSortedDictionary.Create<int, int>();
+        //    for (int ctr = 0; ctr < _addCount; ++ctr)
+        //    {
+        //        map = map.Add(ctr, ctr);
+        //    }
+        //}
+
+        //[Benchmark]
+        //public void AddNRoslynImmutableHashMap()
+        //{
+        //    var map = ImmutableHashMap<int, int>.Empty;
+        //    for (int ctr = 0; ctr < _addCount; ++ctr)
+        //    {
+        //        map = map.Add(ctr, ctr);
         //    }
         //}
     }
 
+    /*
+     * ihm and imh3 display correctly
+     *
+     * displaying imh2 contents gives a NotImplementedException visible in the debugger
+     * i suspect this is a debugger bug
+     * try with updated VS
+     *
+     */
 
     internal static class Program
     {
         private static void Main()
         {
+            var ihm = ImmutableHashMap<string, int>.Empty;
+            var ihm2 = ihm.Add("one", 1);
+            var ihm3 = ihm2.Add("two", 2);
+            Console.WriteLine(ihm3);
+
             var _ = BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(Job.RyuJitX64.WithGcServer(true)));
         }
     }

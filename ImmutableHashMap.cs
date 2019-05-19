@@ -8,13 +8,14 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Contract = System.Diagnostics.Contracts.Contract;
+
 // ReSharper disable UseNullPropagation
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable ArrangeThisQualifier
 namespace RoslynImmutableHashMapConsoleApp
 {
-    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
-    [DebuggerTypeProxy(typeof(ImmutableHashMap<,>.DebuggerProxy))]
-    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    [DebuggerTypeProxy(typeof(DebuggerProxy<,>))]
+    //[SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     internal sealed class ImmutableHashMap<TKey, TValue> : IImmutableDictionary<TKey, TValue>
     {
         private readonly Bucket _root;
@@ -33,7 +34,8 @@ namespace RoslynImmutableHashMapConsoleApp
             _root = root;
         }
 
-        internal ImmutableHashMap(IEqualityComparer<TKey> comparer = null, IEqualityComparer<TValue> valueComparer = null)
+        internal ImmutableHashMap(IEqualityComparer<TKey> comparer = null,
+            IEqualityComparer<TValue> valueComparer = null)
         {
             _keyComparer = comparer ?? EqualityComparer<TKey>.Default;
             _valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
@@ -136,7 +138,8 @@ namespace RoslynImmutableHashMapConsoleApp
         }
 
         [Pure]
-        public ImmutableHashMap<TKey, TValue> WithComparers(IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
+        public ImmutableHashMap<TKey, TValue> WithComparers(IEqualityComparer<TKey> keyComparer,
+            IEqualityComparer<TValue> valueComparer)
         {
             if (keyComparer == null)
             {
@@ -183,15 +186,9 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #region IImmutableDictionary<TKey, TValue> Members
 
-        public int Count
-        {
-            get { return _root != null ? _root.Count : 0; }
-        }
+        public int Count => _root?.Count ?? 0;
 
-        public bool IsEmpty
-        {
-            get { return this.Count == 0; }
-        }
+        public bool IsEmpty => this.Count == 0;
 
         public IEnumerable<TKey> Keys
         {
@@ -306,7 +303,8 @@ namespace RoslynImmutableHashMapConsoleApp
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return this.GetValueBuckets().Select(vb => new KeyValuePair<TKey, TValue>(vb.Key, vb.Value)).GetEnumerator();
+            return this.GetValueBuckets().Select(vb => new KeyValuePair<TKey, TValue>(vb.Key, vb.Value))
+                .GetEnumerator();
         }
 
         #endregion
@@ -320,26 +318,28 @@ namespace RoslynImmutableHashMapConsoleApp
 
         #endregion
 
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder("ImmutableHashMap[");
-            bool needComma = false;
-            foreach (var kv in this)
-            {
-                builder.Append(kv.Key);
-                builder.Append(":");
-                builder.Append(kv.Value);
-                if (needComma)
-                {
-                    builder.Append(",");
-                }
+        //public override string ToString()
+        //{
+        //    return string.Join(",", this);
 
-                needComma = true;
-            }
+        //    //var builder = new StringBuilder("ImmutableHashMap[");
+        //    //bool needComma = false;
+        //    //foreach (var kv in this)
+        //    //{
+        //    //    builder.Append(kv.Key);
+        //    //    builder.Append(":");
+        //    //    builder.Append(kv.Value);
+        //    //    if (needComma)
+        //    //    {
+        //    //        builder.Append(",");
+        //    //    }
 
-            builder.Append("]");
-            return builder.ToString();
-        }
+        //    //    needComma = true;
+        //    //}
+
+        //    //builder.Append("]");
+        //    //return builder.ToString();
+        //}
 
         internal bool TryExchangeKey(TKey key, out TKey existingKey)
         {
@@ -356,7 +356,8 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
-        private static bool TryCastToImmutableMap(IEnumerable<KeyValuePair<TKey, TValue>> sequence, out ImmutableHashMap<TKey, TValue> other)
+        private static bool TryCastToImmutableMap(IEnumerable<KeyValuePair<TKey, TValue>> sequence,
+            out ImmutableHashMap<TKey, TValue> other)
         {
             other = sequence as ImmutableHashMap<TKey, TValue>;
             if (other != null)
@@ -376,14 +377,17 @@ namespace RoslynImmutableHashMapConsoleApp
 
             if (_root != root)
             {
-                return root.Count == 0 ? this.Clear() : new ImmutableHashMap<TKey, TValue>(root, _keyComparer, _valueComparer);
+                return root.Count == 0
+                    ? this.Clear()
+                    : new ImmutableHashMap<TKey, TValue>(root, _keyComparer, _valueComparer);
             }
 
             return this;
         }
 
         [Pure]
-        private ImmutableHashMap<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs, bool overwriteOnCollision, bool avoidToHashMap)
+        private ImmutableHashMap<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs,
+            bool overwriteOnCollision, bool avoidToHashMap)
         {
             Debug.Assert(pairs != null);
             Contract.Ensures(Contract.Result<ImmutableHashMap<TKey, TValue>>() != null);
@@ -445,7 +449,9 @@ namespace RoslynImmutableHashMapConsoleApp
         {
             internal abstract int Count { get; }
 
-            internal abstract Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> comparer, IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue);
+            internal abstract Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> comparer,
+                IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue);
+
             internal abstract Bucket Remove(int hash, TKey key, IEqualityComparer<TKey> comparer);
             internal abstract ValueBucket Get(int hash, TKey key, IEqualityComparer<TKey> comparer);
             internal abstract IEnumerable<Bucket> GetAll();
@@ -475,7 +481,8 @@ namespace RoslynImmutableHashMapConsoleApp
 
             internal override int Count => 1;
 
-            internal override Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> comparer, IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue)
+            internal override Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> comparer,
+                IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue)
             {
                 if (this.Hash == bucket.Hash)
                 {
@@ -499,7 +506,7 @@ namespace RoslynImmutableHashMapConsoleApp
                     }
                     else
                     {
-                        return new ListBucket(new ValueBucket[] { this, bucket });
+                        return new ListBucket(new ValueBucket[] {this, bucket});
                     }
                 }
                 else
@@ -548,7 +555,8 @@ namespace RoslynImmutableHashMapConsoleApp
 
             internal override int Count => _buckets.Length;
 
-            internal override Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> comparer, IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue)
+            internal override Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> comparer,
+                IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue)
             {
                 if (this.Hash == bucket.Hash)
                 {
@@ -664,15 +672,14 @@ namespace RoslynImmutableHashMapConsoleApp
                 Debug.Assert(bucket2 != null);
                 Debug.Assert(bucket1.Hash != bucket2.Hash);
 
-                var h1 = bucket1.Hash;
-                var h2 = bucket2.Hash;
-                int s1;
-                int s2;
+                int h1 = bucket1.Hash;
+                int h2 = bucket2.Hash;
                 for (int i = 0; i < 32; i++)
                 {
                     _hashRoll = (suggestedHashRoll + i) & 31;
-                    s1 = this.ComputeLogicalSlot(h1);
-                    s2 = this.ComputeLogicalSlot(h2);
+                    int s1 = this.ComputeLogicalSlot(h1);
+                    int s2 = this.ComputeLogicalSlot(h2);
+
                     if (s1 != s2)
                     {
                         _count = 2;
@@ -689,7 +696,8 @@ namespace RoslynImmutableHashMapConsoleApp
 
             internal override int Count => _count;
 
-            internal override Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue)
+            internal override Bucket Add(int suggestedHashRoll, ValueBucket bucket, IEqualityComparer<TKey> keyComparer,
+                IEqualityComparer<TValue> valueComparer, bool overwriteExistingValue)
             {
                 int logicalSlot = ComputeLogicalSlot(bucket.Hash);
                 if (IsInUse(logicalSlot))
@@ -737,12 +745,14 @@ namespace RoslynImmutableHashMapConsoleApp
                         }
                         else
                         {
-                            return new HashBucket(_hashRoll, RemoveBit(logicalSlot, _used), _buckets.RemoveAt(physicalSlot), _count - existing.Count);
+                            return new HashBucket(_hashRoll, RemoveBit(logicalSlot, _used),
+                                _buckets.RemoveAt(physicalSlot), _count - existing.Count);
                         }
                     }
                     else if (_buckets[physicalSlot] != result)
                     {
-                        return new HashBucket(_hashRoll, _used, _buckets.ReplaceAt(physicalSlot, result), _count - existing.Count + result.Count);
+                        return new HashBucket(_hashRoll, _used, _buckets.ReplaceAt(physicalSlot, result),
+                            _count - existing.Count + result.Count);
                     }
                 }
 
@@ -773,9 +783,9 @@ namespace RoslynImmutableHashMapConsoleApp
 
             private int ComputeLogicalSlot(int hc)
             {
-                uint uc = unchecked((uint)hc);
+                uint uc = unchecked((uint) hc);
                 uint rotated = RotateRight(uc, _hashRoll);
-                return unchecked((int)(rotated & 31));
+                return unchecked((int) (rotated & 31));
             }
 
             [Pure]
@@ -804,7 +814,7 @@ namespace RoslynImmutableHashMapConsoleApp
                     return 0;
                 }
 
-                uint mask = uint.MaxValue >> (32 - logicalSlot);           
+                uint mask = uint.MaxValue >> (32 - logicalSlot);
                 return CountBits(_used & mask);
             }
 
@@ -817,7 +827,7 @@ namespace RoslynImmutableHashMapConsoleApp
                     v = v - ((v >> 1) & 0x55555555u);
 #pragma warning restore IDE0054    
                     v = (v & 0x33333333u) + ((v >> 2) & 0x33333333u);
-                    return (int)((v + (v >> 4) & 0xF0F0F0Fu) * 0x1010101u) >> 24;
+                    return (int) ((v + (v >> 4) & 0xF0F0F0Fu) * 0x1010101u) >> 24;
                 }
             }
 
@@ -853,12 +863,14 @@ namespace RoslynImmutableHashMapConsoleApp
             return this.SetItem(key, value);
         }
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.SetItems(
+            IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
             return this.SetItems(items);
         }
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.AddRange(
+            IEnumerable<KeyValuePair<TKey, TValue>> pairs)
         {
             return this.AddRange(pairs);
         }
@@ -874,34 +886,7 @@ namespace RoslynImmutableHashMapConsoleApp
         }
 
         #endregion
-
-        private class DebuggerProxy
-        {
-            private readonly ImmutableHashMap<TKey, TValue> _map;
-
-            private KeyValuePair<TKey, TValue>[] _contents;
-
-            public DebuggerProxy(ImmutableHashMap<TKey, TValue> map)
-            {
-                Requires.NotNull(map, "map");
-                _map = map;
-            }
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public KeyValuePair<TKey, TValue>[] Contents
-            {
-                get
-                {
-                    if (_contents == null)
-                    {
-                        _contents = _map.ToArray();
-                    }
-
-                    return _contents;
-                }
-            }
-        }
-
+        
         private static class Requires
         {
             [DebuggerStepThrough]
@@ -952,4 +937,31 @@ namespace RoslynImmutableHashMapConsoleApp
             public static string DuplicateKey => "An_element_with_the_same_key_but_a_different_value_already_exists";
         }
     }
+
+    internal class DebuggerProxy<TKey, TValue>
+    {
+        private readonly ImmutableHashMap<TKey, TValue> _map;
+
+        public DebuggerProxy(ImmutableHashMap<TKey, TValue> map)
+        {
+            _map = map;
+        }
+
+        // DebuggerBrowsable hides the property from the debugger
+        //[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public KeyValuePair<TKey, TValue>[] Contents
+        {
+            get { return _map.ToArray(); }
+        }
+
+        public string Contents2 => _map == null ? "empty" : string.Join(",", _map);
+        public string Contents3 => _map == null ? "_map is null" : _map.GetType().ToString();
+
+
+        public string SCount => $"proxy count: {_map.Count}";
+
+        //[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public string StrContents => "blah";
+    }
+
 }

@@ -40,7 +40,7 @@ namespace RoslynImmutableHashMapConsoleApp
             {
                 var augmentedMap = map.Add(key, newValue);
 
-                // if location refEq map then do the exchange
+                // if location has not changed since "var map = Volatile.Read(ref location)"
                 var replacedMap = Interlocked.CompareExchange(ref location, augmentedMap, map);
                 if (replacedMap == map)
                 {
