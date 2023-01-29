@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using Roslyn.Utilities;
 
 namespace RoslynImmutableHashMapConsoleApp
 {
@@ -386,7 +387,10 @@ namespace RoslynImmutableHashMapConsoleApp
 
             internal override IEnumerable<Bucket> GetAll()
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
+                //return SpecializedCollections.SingletonEnumerable(this);
+                //return new Roslyn.Utilities.SpecializedCollections.Singleton.List<Bucket>(this);
+                return new List<Bucket>{this};
             }
         }
 

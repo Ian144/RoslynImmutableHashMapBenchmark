@@ -11,7 +11,7 @@ namespace Roslyn.Utilities
         {
             internal class Enumerator<T> : Enumerator, IEnumerator<T>
             {
-                public static new readonly IEnumerator<T> Instance = new Enumerator<T>();
+                public new static readonly IEnumerator<T> Instance = new Enumerator<T>();
 
                 protected Enumerator()
                 {

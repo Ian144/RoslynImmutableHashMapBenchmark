@@ -9,42 +9,36 @@ namespace Roslyn.Utilities
     {
         private partial class Empty
         {
-            internal class List<T> : Collection<T>, IList<T>, IReadOnlyList<T>
-            {
-                public static readonly new List<T> Instance = new List<T>();
+            //internal class List<T> : Collection<T>, IList<T>, IReadOnlyList<T>
+            //{
+            //    public new static readonly List<T> Instance = new List<T>();
 
-                protected List()
-                {
-                }
+            //    protected List()
+            //    {
+            //    }
 
-                public int IndexOf(T item)
-                {
-                    return -1;
-                }
+            //    public int IndexOf(T item)
+            //    {
+            //        return -1;
+            //    }
 
-                public void Insert(int index, T item)
-                {
-                    throw new NotSupportedException();
-                }
+            //    public void Insert(int index, T item)
+            //    {
+            //        throw new NotSupportedException();
+            //    }
 
-                public void RemoveAt(int index)
-                {
-                    throw new NotSupportedException();
-                }
+            //    public void RemoveAt(int index)
+            //    {
+            //        throw new NotSupportedException();
+            //    }
 
-                public T this[int index]
-                {
-                    get
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(index));
-                    }
+            //    public T this[int index]
+            //    {
+            //        get => throw new ArgumentOutOfRangeException(nameof(index));
 
-                    set
-                    {
-                        throw new NotSupportedException();
-                    }
-                }
-            }
+            //        set => throw new NotSupportedException();
+            //    }
+            //}
         }
     }
 }

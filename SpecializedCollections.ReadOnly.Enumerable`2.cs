@@ -8,19 +8,19 @@ namespace Roslyn.Utilities
     {
         private partial class ReadOnly
         {
-            internal class Enumerable<TUnderlying, T> : Enumerable<TUnderlying>, IEnumerable<T>
-                where TUnderlying : IEnumerable<T>
-            {
-                public Enumerable(TUnderlying underlying)
-                    : base(underlying)
-                {
-                }
+            //    internal class Enumerable<TUnderlying, T> : Enumerable<TUnderlying>, IEnumerable<T>
+            //        where TUnderlying : IEnumerable<T>
+            //    {
+            //        public Enumerable(TUnderlying underlying)
+            //            : base(underlying)
+            //        {
+            //        }
 
-                public new IEnumerator<T> GetEnumerator()
-                {
-                    return this.Underlying.GetEnumerator();
-                }
-            }
+            //        public new IEnumerator<T> GetEnumerator()
+            //        {
+            //            return this.Underlying.GetEnumerator();
+            //        }
+            //    }
         }
     }
 }

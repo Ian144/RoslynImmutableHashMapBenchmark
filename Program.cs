@@ -14,7 +14,6 @@ using System.Linq;
 namespace RoslynImmutableHashMapConsoleApp
 {
     [MemoryDiagnoser]
-    [RyuJitX64Job]
     public class Benchmarks
     {
         private readonly Random _rnd;

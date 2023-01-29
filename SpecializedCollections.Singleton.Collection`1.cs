@@ -8,7 +8,7 @@ namespace Roslyn.Utilities
 {
     internal static partial class SpecializedCollections
     {
-        private static partial class Singleton
+        internal static partial class Singleton
         {
             internal sealed class List<T> : IList<T>, IReadOnlyCollection<T>
             {
@@ -50,7 +50,8 @@ namespace Roslyn.Utilities
 
                 public IEnumerator<T> GetEnumerator()
                 {
-                    return new Enumerator<T>(_loneValue);
+                    //return new Enumerator<T>(_loneValue);
+                    return null;
                 }
 
                 IEnumerator IEnumerable.GetEnumerator()
@@ -70,10 +71,7 @@ namespace Roslyn.Utilities
                         return _loneValue;
                     }
 
-                    set
-                    {
-                        throw new NotSupportedException();
-                    }
+                    set => throw new NotSupportedException();
                 }
 
                 public int IndexOf(T item)

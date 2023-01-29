@@ -9,67 +9,61 @@ namespace Roslyn.Utilities
     {
         private partial class Empty
         {
-            internal class Dictionary<TKey, TValue> : Collection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
-            {
-                public static readonly new Dictionary<TKey, TValue> Instance = new Dictionary<TKey, TValue>();
+            //internal class Dictionary<TKey, TValue> : Collection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
+            //{
+            //    public new static readonly Dictionary<TKey, TValue> Instance = new Dictionary<TKey, TValue>();
 
-                private Dictionary()
-                {
-                }
+            //    private Dictionary()
+            //    {
+            //    }
 
-                public void Add(TKey key, TValue value)
-                {
-                    throw new NotSupportedException();
-                }
+            //    public void Add(TKey key, TValue value)
+            //    {
+            //        throw new NotSupportedException();
+            //    }
 
-                public bool ContainsKey(TKey key)
-                {
-                    return false;
-                }
+            //    public bool ContainsKey(TKey key)
+            //    {
+            //        return false;
+            //    }
 
-                public ICollection<TKey> Keys
-                {
-                    get
-                    {
-                        return Collection<TKey>.Instance;
-                    }
-                }
+            //    public ICollection<TKey> Keys => Collection<TKey>.Instance;
 
-                IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
-                IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
+            //    IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+            //    IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
-                public bool Remove(TKey key)
-                {
-                    throw new NotSupportedException();
-                }
+            //    public bool Remove(TKey key)
+            //    {
+            //        throw new NotSupportedException();
+            //    }
 
-                public bool TryGetValue(TKey key, out TValue value)
-                {
-                    value = default;
-                    return false;
-                }
+            //    public bool TryGetValue(TKey key, out TValue value)
+            //    {
+            //        value = default;
+            //        return false;
+            //    }
 
-                public ICollection<TValue> Values
-                {
-                    get
-                    {
-                        return Collection<TValue>.Instance;
-                    }
-                }
+            //    public ICollection<TValue> Values
+            //    {
+            //        get
+            //        {
+            //            return Collection<TValue>.Instance;
+            //        }
+            //    }
 
-                public TValue this[TKey key]
-                {
-                    get
-                    {
-                        throw new NotSupportedException();
-                    }
+            //    public TValue this[TKey key]
+            //    {
+            //        get
+            //        {
+            //            throw new NotSupportedException();
+            //        }
 
-                    set
-                    {
-                        throw new NotSupportedException();
-                    }
-                }
-            }
+            //        set
+            //        {
+            //            throw new NotSupportedException();
+            //        }
+            //    }
+            //}
         }
     }
 }
