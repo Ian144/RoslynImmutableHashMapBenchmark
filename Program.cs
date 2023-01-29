@@ -54,6 +54,7 @@ namespace RoslynImmutableHashMapConsoleApp
             }
         }
 
+
         //[GlobalSetup]
         //[Setup]
         //public void Setup()
@@ -87,22 +88,23 @@ namespace RoslynImmutableHashMapConsoleApp
         {
             foreach (var (key, _) in _randItems)
             {
-                bool _ = _roslynMap.TryGetValue(key, out int vvalue);
+                bool exists = _roslynMap.TryGetValue(key, out int vvalue);
                 _roslynMap = _roslynMap.SetItem(key, ++vvalue);
             }
         }
 
-        [Benchmark]
-        public void DictTryGetSetToImmDict()
-        {
-            foreach (var (key, _) in _randItems)
-            {
-                bool _ = _dict.TryGetValue(key, out int vvalue);
-                _dict[key] = ++vvalue;
-            }
+        //[Benchmark]
+        //public void DictTryGetSetToImmDict()
+        //{
+        //    foreach (var (key, _) in _randItems)
+        //    {
+        //        bool exists = _dict.TryGetValue(key, out int vvalue);
+        //        if(exists)
+        //            _dict[key] = ++vvalue;
+        //    }
 
-            var immx = _dict.ToImmutableDictionary();
-        }
+        //    var immx = _dict.ToImmutableDictionary();
+        //}
 
         //[Benchmark]
         //public void AddNDict()

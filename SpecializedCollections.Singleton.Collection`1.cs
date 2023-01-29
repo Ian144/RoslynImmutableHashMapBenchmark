@@ -50,8 +50,8 @@ namespace Roslyn.Utilities
 
                 public IEnumerator<T> GetEnumerator()
                 {
-                    //return new Enumerator<T>(_loneValue);
-                    return null;
+                    return new Enumerator<T>(_loneValue);
+                    //return null;
                 }
 
                 IEnumerator IEnumerable.GetEnumerator()
